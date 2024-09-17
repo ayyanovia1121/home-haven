@@ -1,5 +1,6 @@
 'use client'
 import { Button } from '@/components/ui/button';
+import { UserButton, useUser } from '@clerk/nextjs';
 import { Plus } from 'lucide-react';
 import Image from 'next/image'
 import Link from 'next/link';
@@ -8,6 +9,7 @@ import React, { useEffect } from 'react'
 
 const Header = () => {
   const path = usePathname();
+  const {user,isSignedIn} = useUser();
 
   useEffect(() => {
     console.log(path)
@@ -22,7 +24,9 @@ const Header = () => {
         <ul className="hidden md:flex gap-10">
           <Link href="/">
             <li
-              className={`'hover:text-primary font-medium text-sm cursor-pointer'${path=="/"&&" text-primary"}`}
+              className={`'hover:text-primary font-medium text-sm cursor-pointer'${
+                path == "/" && " text-primary"
+              }`}
             >
               Sale
             </li>
@@ -35,14 +39,20 @@ const Header = () => {
           </li>
         </ul>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center">
         <Button variant="default" className="rounded-full flex gap-2">
           <Plus className="w-4 h-4" />
           Post an Ad
         </Button>
-        <Button variant="outline" className="rounded-full flex gap-2">
-          Login
-        </Button>
+        {isSignedIn ? (
+          <UserButton />
+        ) : (
+          <Link href={"/sign-in"}>
+            <Button variant="outline" className="rounded-full flex gap-2">
+              Login
+            </Button>
+          </Link>
+        )}
       </div>
     </div>
   );
